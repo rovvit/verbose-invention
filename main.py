@@ -55,7 +55,7 @@ async def handle_email(message: types.Message):
 
 async def check_payment(message: types.Message):
     try:
-        invite_link = await bot.create_chat_invite_link(chat_id=int(TARGET_CHAT_ID)) #TODO Remove later
+        # invite_link = await bot.create_chat_invite_link(chat_id=int(TARGET_CHAT_ID)) #TODO Remove later
         hardcoded_ling = TELEGRAM_CHAT_LINK
         await message.answer(
             f"{SUBSCRIPTION_FOUND} {hardcoded_ling}"
