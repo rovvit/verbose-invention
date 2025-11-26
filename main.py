@@ -7,6 +7,7 @@ from aiogram.fsm.storage.memory import MemoryStorage
 from config import TELEGRAM_BOT_TOKEN, TARGET_CHAT_ID
 from states import AppState
 from utils.keyboards import show_menu
+from utils.messages import SUBSCRIPTION_NOT_FOUND, SUBSCRIPTION_FOUND, SUBSCRIPTION_FOUND_BUT_LINK_FAILED
 from webhook_service import find_subscription
 from utils.logger import logger
 
@@ -48,8 +49,7 @@ async def handle_email(message: types.Message):
         await check_payment(message)
     else:
         await message.answer(
-            "❌ Не найден успешный платёж с таким email.\n"
-            "Проверь правильность адреса или попробуй позже."
+            SUBSCRIPTION_NOT_FOUND
         )
 
 
@@ -57,11 +57,10 @@ async def check_payment(message: types.Message):
     try:
         invite_link = await bot.create_chat_invite_link(chat_id=int(TARGET_CHAT_ID))
         await message.answer(
-            f"✅ Оплата подтверждена!\n"
-            f"Вот твоя ссылка для входа в закрытый чат:\n{invite_link.invite_link}"
+            f"{SUBSCRIPTION_FOUND} {invite_link.invite_link}"
         )
     except Exception as e:
-        await message.answer(f"✅ Оплата найдена, но не удалось создать ссылку.")
+        await message.answer(SUBSCRIPTION_FOUND_BUT_LINK_FAILED)
 
 
 async def main():

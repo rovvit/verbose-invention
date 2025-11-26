@@ -1,10 +1,10 @@
 from aiogram.client.session import aiohttp
-from config import STRIPE_WEBHOOK_PORT, STRIPE_WEBHOOK_HOST
+from config import STRIPE_WEBHOOK_HOST
 from utils.logger import logger
 
 
 async def find_subscription(email: str=None, telegram_tag: str=None):
-    api_url = f"http://{STRIPE_WEBHOOK_HOST}:{STRIPE_WEBHOOK_PORT}/api/check_subscription"
+    api_url = f"http://{STRIPE_WEBHOOK_HOST}/api/check_subscription"
     async with aiohttp.ClientSession() as session:
         if email:
             logger.info(f"[WH SERVICE] Checking by email {email}")
