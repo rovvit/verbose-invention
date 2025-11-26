@@ -4,7 +4,7 @@ from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
 from aiogram.filters import StateFilter
 from aiogram.fsm.storage.memory import MemoryStorage
-from config import TELEGRAM_BOT_TOKEN, TARGET_CHAT_ID
+from config import TELEGRAM_BOT_TOKEN, TARGET_CHAT_ID, TELEGRAM_CHAT_LINK
 from states import AppState
 from utils.keyboards import show_menu
 from utils.messages import SUBSCRIPTION_NOT_FOUND, SUBSCRIPTION_FOUND, SUBSCRIPTION_FOUND_BUT_LINK_FAILED
@@ -55,9 +55,10 @@ async def handle_email(message: types.Message):
 
 async def check_payment(message: types.Message):
     try:
-        invite_link = await bot.create_chat_invite_link(chat_id=int(TARGET_CHAT_ID))
+        invite_link = await bot.create_chat_invite_link(chat_id=int(TARGET_CHAT_ID)) #TODO Remove later
+        hardcoded_ling = TELEGRAM_CHAT_LINK
         await message.answer(
-            f"{SUBSCRIPTION_FOUND} {invite_link.invite_link}"
+            f"{SUBSCRIPTION_FOUND} {hardcoded_ling}"
         )
     except Exception as e:
         await message.answer(SUBSCRIPTION_FOUND_BUT_LINK_FAILED)
