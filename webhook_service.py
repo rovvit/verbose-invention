@@ -13,7 +13,7 @@ async def find_subscription(email: str=None, telegram_tag: str=None):
             ) as resp:
                 data = await resp.json()
                 logger.info(f"[WH SERVICE] Response is {data}")
-                return data["paid"] == "active" #TODO Implement logic for non-active statuses
+                return data["paid"] #TODO Implement logic for non-active statuses
         elif telegram_tag:
             logger.info(f"[WH SERVICE] Checking by telegram_tag {telegram_tag}")
             async with session.get(
@@ -21,7 +21,7 @@ async def find_subscription(email: str=None, telegram_tag: str=None):
             ) as resp:
                 data = await resp.json()
                 logger.info(f"[WH SERVICE] Response is {data}")
-                return data["paid"] == "active" #TODO Implement logic for non-active statuses
+                return data["paid"] #TODO Implement logic for non-active statuses
         else:
             logger.error(f"[WH SERVICE] No argument passed for checking")
             return False
