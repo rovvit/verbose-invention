@@ -5,11 +5,13 @@ from states import AppState
 from utils.messages import START_MESSAGE
 
 
-async def show_menu(message: Message, state: FSMContext):
+def main_menu_keyboard():
     builder = InlineKeyboardBuilder()
-
     builder.button(text="Проверить подписку", callback_data="check_subscription")
-    await message.answer(START_MESSAGE,
-        reply_markup=builder.as_markup()
-    )
-    await state.set_state(AppState.check_subscription)
+    return builder.as_markup()
+
+def check_by_email_keyboard():
+    builder = InlineKeyboardBuilder()
+    builder.button(text="Повторить попытку", callback_data="check_subscription")
+    builder.button(text="Вернуться в главное меню", callback_data="back_to_main")
+    return builder.as_markup()
