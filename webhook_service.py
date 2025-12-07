@@ -22,5 +22,5 @@ async def find_subscription(email: str=None, telegram_tag: str=None):
                 return data["paid"] == "active" #TODO Implement logic for non-active statuses
         else:
             logger.error(f"[WH SERVICE] No argument passed for checking")
-            raise ValueError("[FIND_SUB] No argument passed")
+            return False
 
