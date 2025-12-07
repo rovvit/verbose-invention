@@ -1,4 +1,6 @@
 import asyncio
+import time
+
 from aiogram import Bot, Dispatcher, types, F
 from aiogram.filters import Command
 from aiogram.fsm.context import FSMContext
@@ -45,7 +47,7 @@ async def check_subscription(callback: types.CallbackQuery, state: FSMContext):
     if telegram_tag:
         payment = await find_subscription(telegram_tag=telegram_tag)
         if payment:
-            await check_payment(callback.message)
+            await check_payment(callback.message, state)
             return
 
     await state.set_state(AppState.check_by_email)
@@ -60,7 +62,7 @@ async def handle_email(message: types.Message, state: FSMContext):
     msg = await message.answer("Проверяю оплату, пожалуйста подождите...")
     payment = await find_subscription(email=email)
     if payment:
-        await check_payment(message)
+        await check_payment(msg, state)
     else:
         await msg.edit_text(SUBSCRIPTION_NOT_FOUND, reply_markup=check_by_email_keyboard())
         await state.clear()
@@ -79,15 +81,20 @@ async def no_state_message(message: types.Message, state: FSMContext):
     logger.info(f"[NO STATE] No state filter reached, showing main menu")
     await show_menu(message, state)
 
-async def check_payment(message: types.Message):
+async def check_payment(msg: types.Message, state: FSMContext):
     try:
-        # invite_link = await bot.create_chat_invite_link(chat_id=int(TARGET_CHAT_ID)) #TODO Remove later
-        hardcoded_ling = TELEGRAM_CHAT_LINK
-        await message.answer(
-            f"{SUBSCRIPTION_FOUND} {hardcoded_ling}"
+        invite = await bot.create_chat_invite_link(
+            chat_id=int(TARGET_CHAT_ID),
+            expire_date=int(time.time()) + 24 * 60 * 60,  # ссылка будет действовать 24 часа
+            member_limit=1,
         )
+        # invite_link = TELEGRAM_CHAT_LINK  #TODO Remove later
+        await msg.edit_text(
+            f"{SUBSCRIPTION_FOUND} {invite.invite_link}"
+        )
+        await state.clear()
     except Exception as e:
-        await message.answer(SUBSCRIPTION_FOUND_BUT_LINK_FAILED)
+        await msg.edit_text(SUBSCRIPTION_FOUND_BUT_LINK_FAILED, reply_markup=check_by_email_keyboard())
 
 
 async def main():
