@@ -45,7 +45,7 @@ async def check_subscription(callback: types.CallbackQuery, state: FSMContext):
     logger.info(f"[CHECK] Checking subscription for {telegram_tag} by telegram_tag")
 
     if telegram_tag:
-        payment = await find_subscription(telegram_tag=telegram_tag)
+        payment = await find_subscription(telegram_tag=telegram_tag, telegram_user_id=callback.from_user.id)
         if payment:
             await check_payment(callback.message, state)
             return
@@ -60,7 +60,7 @@ async def handle_email(message: types.Message, state: FSMContext):
     logger.info(f"[CHECK] Checking subscription for {email} by email")
 
     msg = await message.answer("Проверяю оплату, пожалуйста подождите...")
-    payment = await find_subscription(email=email)
+    payment = await find_subscription(email=email, telegram_user_id=message.from_user.id)
     if payment:
         await check_payment(msg, state)
     else:
