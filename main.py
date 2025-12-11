@@ -41,11 +41,11 @@ async def check_subscription(callback: types.CallbackQuery, state: FSMContext):
     await callback.answer()
     await callback.message.edit_reply_markup(reply_markup=None)
 
-    telegram_tag = callback.from_user.username
-    logger.info(f"[CHECK] Checking subscription for {telegram_tag} by telegram_tag")
+    username = callback.from_user.username
+    logger.info(f"[CHECK] Checking subscription for {username} by username")
 
-    if telegram_tag:
-        payment = await find_subscription(telegram_tag=telegram_tag, telegram_user_id=callback.from_user.id)
+    if username:
+        payment = await find_subscription(username=username, telegram_user_id=callback.from_user.id)
         if payment:
             await check_payment(callback.message, state)
             return
