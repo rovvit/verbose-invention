@@ -4,7 +4,7 @@ from utils.logger import logger
 
 
 async def find_subscription(email: str=None, username: str=None, telegram_user_id: int=None):
-    api_url = f"http://{STRIPE_WEBHOOK_HOST}/api/subscription/check"
+    api_url = f"https://{STRIPE_WEBHOOK_HOST}/api/subscription/check"
     payload = {"user_id": telegram_user_id}
     if email:
         payload["email"] = email
