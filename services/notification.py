@@ -1,10 +1,10 @@
 import asyncio
 import logging
-from datetime import datetime, timezone
 
 from aiogram import Bot
 
 from services.subscription import get_expiring_subscriptions
+from utils.messages import REMINDER_5_DAYS, REMINDER_TODAY
 
 logger = logging.getLogger(__name__)
 
@@ -20,25 +20,23 @@ async def notify_expiring_subscriptions(
         logger.info("[SCHEDULER] No expiring subscriptions")
         return
 
-    now = datetime.now(timezone.utc)
 
     for item in subscriptions:
         try:
             user_id = item["user_id"]
-            date_end = datetime.fromisoformat(item["date_end"])
-
-            days_left = max((date_end - now).days, 0)
-
-            await bot.send_message(
-                chat_id=user_id,
-                text=(
-                    "⚠️ Ваша подписка скоро закончится\n\n"
-                    f"Дата окончания: {date_end:%d.%m.%Y}\n"
-                    f"Осталось дней: {days_left}"
-                )
+            if days == 1:
+                await bot.send_message(
+                    chat_id=user_id,
+                    text=REMINDER_TODAY
             )
-
-            await asyncio.sleep(0.1)  # антифлуд
+            elif days == 5:
+                await bot.send_message(
+                    chat_id=user_id,
+                    text=REMINDER_5_DAYS
+                )
+            else:
+                logger.info("[SCHEDULER] Other than 5 or 1 days is passed, skipping.")
+            await asyncio.sleep(0.1)
 
         except Exception:
             logger.exception(
