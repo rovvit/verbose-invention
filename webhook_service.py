@@ -26,3 +26,15 @@ async def find_subscription(email: str=None, username: str=None, telegram_user_i
 
             logger.info(f"[WH SERVICE] Response is {data}")
             return data.get("subscription_status", False)
+
+async def get_expiring_subscriptions(days: int=5):
+    api_url = f"http://{STRIPE_WEBHOOK_HOST}/api/subscription/expiring"
+    async with aiohttp.ClientSession()as session:
+        async with session.get(api_url, params={"days": days}) as resp:
+            try:
+                data = await resp.json()
+                return data
+            except Exception:
+                logger.exception(f"[WH SERVICE] get_expiring_subscriptions error")
+                logger.exception(Exception)
+                return []
