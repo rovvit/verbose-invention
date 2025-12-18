@@ -42,9 +42,8 @@ async def unban_user(bot: Bot, user_id: int) -> None:
             logger.error("[UNBAN] Bot is not admin or lost permissions!")
         else:
             member = await bot.get_chat_member(chat_id=TARGET_CHAT_ID, user_id=user_id)
-            logger.info(f"user_id {user_id} is {member.status}")
             if member.status == "kicked":
                 await bot.unban_chat_member(chat_id=TARGET_CHAT_ID, user_id=user_id)
-            logger.info(f"[UNBAN] Unbanned user {user_id}")
+                logger.info(f"[UNBAN] Unbanned user {user_id}")
     except Exception:
         logger.exception(f"[UNBAN] Failed for user {user_id}")
