@@ -13,6 +13,7 @@ from utils.messages import (
     SUBSCRIPTION_NOT_FOUND,
 )
 from utils.logger import logger
+from services.ban import unban_user
 
 router = Router()
 
@@ -22,14 +23,16 @@ async def check_by_username(callback: types.CallbackQuery, state: FSMContext):
     await callback.message.edit_reply_markup(None)
 
     username = callback.from_user.username
-    logger.info(f"[CHECK] username={username}")
+    user_id = callback.from_user.id
+    logger.info(f"[CHECK] user_id={user_id} username={username}")
 
     if username:
         payment = await check_subscription(
             username=username,
-            telegram_user_id=callback.from_user.id,
+            telegram_user_id=user_id,
         )
         if payment:
+            await unban_user(bot=callback.bot, user_id=user_id)
             await success_payment(callback.message, state, callback.bot)
             return
 
@@ -39,15 +42,18 @@ async def check_by_username(callback: types.CallbackQuery, state: FSMContext):
 @router.message(StateFilter(AppState.check_by_email))
 async def check_by_email(message: types.Message, state: FSMContext):
     email = message.text.strip().lower()
-    logger.info(f"[CHECK] email={email}")
+    user_id = message.from_user.id
+
+    logger.info(f"[CHECK] user_id={user_id} email={email}")
 
     msg = await message.answer("Проверяю оплату...")
     payment = await check_subscription(
         email=email,
-        telegram_user_id=message.from_user.id,
+        telegram_user_id=user_id,
     )
 
     if payment:
+        await unban_user(bot=message.bot, user_id=user_id)
         await success_payment(msg, state, message.bot)
     else:
         await msg.edit_text(
