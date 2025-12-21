@@ -1,5 +1,9 @@
 import asyncio
 import sys
+from pathlib import Path
+
+ROOT_DIR = Path(__file__).resolve().parent.parent
+sys.path.append(str(ROOT_DIR))
 
 from aiogram import Bot
 from config import TELEGRAM_BOT_TOKEN
@@ -19,7 +23,7 @@ async def send_message(user_id: int, text: str=default_text):
         await bot.send_message(chat_id=user_id, text=text)
         logger.info(f"[MANUAL SCRIPT] SUSCCESS Message sent to {user_id}")
     except Exception:
-        logger.error(f"[MANUAL SCRIPT] {Exception}")
+        logger.exception(f"[MANUAL SCRIPT] Something went wrong")
     finally:
         await bot.session.close()
 
@@ -30,6 +34,6 @@ if __name__ == "__main__":
         sys.exit(1)
 
     user_id = int(sys.argv[1])
-    text = " ".join(sys.argv[2:])
+    # text = " ".join(sys.argv[2:])
 
-    asyncio.run(send_message(user_id, text))
+    asyncio.run(send_message(user_id))
