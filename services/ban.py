@@ -9,7 +9,7 @@ async def ban_expired_subscriptions(bot: Bot):
     users = await get_expiring_subscriptions(days=1, end_date=datetime.now(timezone.utc).date())
     logger.info(f"[BAN] Starting baning users... {users}")
     for u in users:
-        if u.user_id == bot.id:
+        if u["user_id"] == bot.id:
             logger.warning("[UNBAN] Skipping unban for bot itself")
         else:
             await ban_user(
