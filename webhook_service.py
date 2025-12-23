@@ -34,6 +34,7 @@ async def get_expiring_subscriptions(days: int=5, end_date: datetime.date = None
         async with session.get(api_url, params={"days": days}) as resp:
             try:
                 data = await resp.json()
+                logger.info(f"[WH GET EXP SUB] Got this data {data}")
                 return data
             except Exception:
                 logger.exception(f"[WH SERVICE] get_expiring_subscriptions error")
