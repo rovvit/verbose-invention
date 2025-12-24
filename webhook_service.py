@@ -31,7 +31,9 @@ async def find_subscription(email: str=None, username: str=None, telegram_user_i
 async def get_expiring_subscriptions(days: int=5, end_date: datetime.date = datetime.today().strftime("%Y-%m-%d")):
     api_url = f"http://{STRIPE_WEBHOOK_HOST}/api/subscription/expiring"
     async with aiohttp.ClientSession()as session:
-        async with session.get(api_url, params={"days": days, "end_date": end_date}) as resp:
+        params = {"days": days, "end_date": end_date}
+        params = {k: v for k, v in params.items() if v is not None}
+        async with session.get(api_url, params=params) as resp:
             try:
                 data = await resp.json()
                 logger.info(f"[WH GET EXP SUB] Got this data {data}")
