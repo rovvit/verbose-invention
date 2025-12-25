@@ -30,14 +30,6 @@ async def on_startup(bot: Bot):
     )
 
     scheduler.add_job(
-        notify_expiring_subscriptions,
-        trigger=CronTrigger(hour=SCHEDULER_HOUR, minute=SCHEDULER_MINUTE, timezone=timezone.utc),
-        kwargs={"bot": bot, "days": 1},
-        id="notify_expiring_subscriptions_1",
-        replace_existing=True,
-    )
-
-    scheduler.add_job(
         ban_expired_subscriptions,
         trigger=CronTrigger(hour=BAN_HOUR, minute=BAN_MINUTE, timezone=timezone.utc),
         kwargs={"bot": bot},
