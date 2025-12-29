@@ -32,10 +32,10 @@ async def ban_user(bot: Bot, user_id: int):
                 f"original={TARGET_CHAT_ID}"
             )
 
-            member = await bot.get_chat_member(target_chat_id, user_id)
+            member = await bot.get_chat_member(TARGET_CHAT_ID, user_id)
             logger.info(f"[BAN] member status before ban: {member.status}")
 
-            await bot.ban_chat_member(target_chat_id, user_id)
+            await bot.ban_chat_member(TARGET_CHAT_ID, user_id)
             await mark_banned(user_id)
 
             logger.info(f"[BAN] User {user_id} banned")
@@ -49,12 +49,16 @@ async def unban_user(bot: Bot, user_id: int) -> None:
         logger.warning("[UNBAN] Skipping unban for bot itself")
         return
     try:
-        bot_member = await bot.get_chat_member(chat_id=TARGET_CHAT_ID, user_id=bot.id)
+        chat = await bot.get_chat(TARGET_CHAT_ID)
+        target_chat_id = chat.linked_chat_id or TARGET_CHAT_ID
+
+        bot_member = await bot.get_chat_member(chat_id=target_chat_id, user_id=bot.id)
         if bot_member.status not in ["administrator", "creator"]:
             logger.error("[UNBAN] Bot is not admin or lost permissions!")
         else:
-            member = await bot.get_chat_member(chat_id=TARGET_CHAT_ID, user_id=user_id)
+            member = await bot.get_chat_member(chat_id=target_chat_id, user_id=user_id)
             if member.status == "kicked":
+                await bot.unban_chat_member(chat_id=target_chat_id, user_id=user_id)
                 await bot.unban_chat_member(chat_id=TARGET_CHAT_ID, user_id=user_id)
                 logger.info(f"[UNBAN] Unbanned user {user_id}")
     except Exception:
