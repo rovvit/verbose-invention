@@ -18,8 +18,9 @@ async def main():
     chat = await bot.get_chat(TARGET_CHAT_ID)
     print("\n=== CHAT INFO ===")
     print(f"type: {chat.type}")
+    print(f"username: {chat.username}")
     print(f"is_forum: {chat.is_forum}")
-    print(f"linkec_chat_id: {chat.linked_chat_id}")
+    print(f"linked_chat_id: {chat.linked_chat_id}")
 
     print("\n=== BOT INFO ===")
     print(f"id: {me.id}")
