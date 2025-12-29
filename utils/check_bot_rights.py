@@ -1,7 +1,11 @@
 import asyncio
+import sys
+from pathlib import Path
 from aiogram import Bot
 from config import TARGET_CHAT_ID, TELEGRAM_BOT_TOKEN
 
+ROOT_DIR = Path(__file__).resolve().parent.parent
+sys.path.append(str(ROOT_DIR))
 
 async def main():
     bot = Bot(TELEGRAM_BOT_TOKEN)
