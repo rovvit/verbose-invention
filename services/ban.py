@@ -28,8 +28,8 @@ async def ban_user(bot: Bot, user_id: int):
             target_chat_id = chat.linked_chat_id or TARGET_CHAT_ID
 
             logger.info(
-                f"[BAN] chat_type={chat.type}, ban_in={target_chat_id}, "
-                f"original={TARGET_CHAT_ID}"
+                f"[BAN] chat_type={chat.type}, target_chat_id={target_chat_id}, "
+                f"TARGET_CHAT_ID={TARGET_CHAT_ID}"
             )
 
             member = await bot.get_chat_member(TARGET_CHAT_ID, user_id)
@@ -58,8 +58,8 @@ async def unban_user(bot: Bot, user_id: int) -> None:
         else:
             member = await bot.get_chat_member(chat_id=target_chat_id, user_id=user_id)
             if member.status == "kicked":
-                await bot.unban_chat_member(chat_id=target_chat_id, user_id=user_id)
-                await bot.unban_chat_member(chat_id=TARGET_CHAT_ID, user_id=user_id)
+                await bot.unban_chat_member(chat_id=target_chat_id, user_id=user_id, only_if_banned=True)
+                await bot.unban_chat_member(chat_id=TARGET_CHAT_ID, user_id=user_id, only_if_banned=True)
                 logger.info(f"[UNBAN] Unbanned user {user_id}")
     except Exception:
         logger.exception(f"[UNBAN] Failed for user {user_id}")
