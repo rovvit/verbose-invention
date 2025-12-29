@@ -24,8 +24,20 @@ async def ban_user(bot: Bot, user_id: int):
         return
     for attempt in range(3):
         try:
-            await bot.ban_chat_member(TARGET_CHAT_ID, user_id)
+            chat = await bot.get_chat(TARGET_CHAT_ID)
+            target_chat_id = chat.linked_chat_id or TARGET_CHAT_ID
+
+            logger.info(
+                f"[BAN] chat_type={chat.type}, ban_in={target_chat_id}, "
+                f"original={TARGET_CHAT_ID}"
+            )
+
+            member = await bot.get_chat_member(target_chat_id, user_id)
+            logger.info(f"[BAN] member status before ban: {member.status}")
+
+            await bot.ban_chat_member(target_chat_id, user_id)
             await mark_banned(user_id)
+
             logger.info(f"[BAN] User {user_id} banned")
             return
         except Exception:
