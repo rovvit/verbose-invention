@@ -48,6 +48,7 @@ async def main():
     for r in rights:
         print(f"{r}: {getattr(member, r, False)}")
 
+    await bot.session.close()
 
 if __name__ == "__main__":
     asyncio.run(main())
