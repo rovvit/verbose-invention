@@ -15,6 +15,12 @@ async def main():
     me = await bot.get_me()
     member = await bot.get_chat_member(TARGET_CHAT_ID, me.id)
 
+    chat = await bot.get_chat(TARGET_CHAT_ID)
+    print("\n=== CHAT INFO ===")
+    print(f"type: {chat.type}")
+    print(f"is_forum: {chat.is_forum}")
+    print(f"linkec_chat_id: {chat.linked_chat_id}")
+
     print("\n=== BOT INFO ===")
     print(f"id: {me.id}")
     print(f"username: @{me.username}")
