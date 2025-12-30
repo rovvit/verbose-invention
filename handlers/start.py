@@ -8,6 +8,10 @@ from utils.logger import logger
 
 router = Router()
 
+# Ignores groups messages
+router.message.filter(F.chat.type == "private")
+router.callback_query.filter(F.message.chat.type == "private")
+
 async def show_menu(message: types.Message, state: FSMContext):
     await state.clear()
     await message.answer(
