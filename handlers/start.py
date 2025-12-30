@@ -9,8 +9,10 @@ from utils.logger import logger
 router = Router()
 
 # Ignores groups messages
-router.message.filter(F.chat.type == "private")
-router.callback_query.filter(F.message.chat.type == "private")
+@router.message(F.chat.type.in_({"group", "supergroup"}))
+async def ignore_groups(message: types.Message):
+    logger.info(f"Skip message for {message.chat.type}")
+    return
 
 async def show_menu(message: types.Message, state: FSMContext):
     await state.clear()
