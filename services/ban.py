@@ -58,13 +58,12 @@ async def unban_user(bot: Bot, user_id: int) -> None:
         else:
             member = await bot.get_chat_member(chat_id=target_chat_id, user_id=user_id)
             logger.info(
-                f"[UNBAN] user_id={user_id}, status={member.status}"
+                f"[UNBAN] Unbanning member: user_id={user_id}, status={member.status}"
             )
 
-            if member.status == "kicked":
-                await bot.unban_chat_member(chat_id=target_chat_id, user_id=user_id, only_if_banned=True)
-                await bot.unban_chat_member(chat_id=TARGET_CHAT_ID, user_id=user_id, only_if_banned=True)
-                logger.info(f"[UNBAN] Unbanned user {user_id}")
+            await bot.unban_chat_member(chat_id=target_chat_id, user_id=user_id, only_if_banned=True)
+            await bot.unban_chat_member(chat_id=TARGET_CHAT_ID, user_id=user_id, only_if_banned=True)
+            logger.info(f"[UNBAN] Unbanned user {user_id}")
     except Exception as e:
         logger.exception(f"[UNBAN] Failed for user {user_id}")
         logger.exception(repr(e))
