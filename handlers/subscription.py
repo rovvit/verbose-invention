@@ -31,9 +31,9 @@ async def check_by_username(callback: types.CallbackQuery, state: FSMContext):
     if first_name:
         full_name = first_name
     if last_name:
-        full_name = full_name + ' ' + last_name
+        full_name.join(last_name)
 
-    logger.info(f"[CHECK] user_id={user_id} username={username}")
+    logger.info(f"[CHECK] user_id={user_id} username={username} full_name={full_name}")
 
     if username:
         payment = await check_subscription(
@@ -54,12 +54,22 @@ async def check_by_email(message: types.Message, state: FSMContext):
     email = message.text.strip().lower()
     user_id = message.from_user.id
 
-    logger.info(f"[CHECK] user_id={user_id} email={email}")
+    first_name = message.from_user.first_name
+    last_name = message.from_user.last_name
+    full_name = ''
+
+    if first_name:
+        full_name = first_name
+    if last_name:
+        full_name.join(last_name)
+
+    logger.info(f"[CHECK] user_id={user_id} email={email} full_name={full_name}")
 
     msg = await message.answer("Проверяю оплату...")
     payment = await check_subscription(
         email=email,
         telegram_user_id=user_id,
+        name=full_name
     )
 
     if payment:
