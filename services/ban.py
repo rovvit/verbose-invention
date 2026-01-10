@@ -58,8 +58,7 @@ async def unban_user(bot: Bot, user_id: int) -> None:
         else:
             member = await bot.get_chat_member(chat_id=target_chat_id, user_id=user_id)
             logger.info(
-                f"[UNBAN] user_id={user_id}, status={member.status}, "
-                f"is_member={member.is_member}"
+                f"[UNBAN] user_id={user_id}, status={member.status}"
             )
 
             if member.status == "kicked":
