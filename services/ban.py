@@ -6,7 +6,7 @@ from datetime import datetime, timezone
 import asyncio
 
 async def ban_expired_subscriptions(bot: Bot):
-    users = await get_expiring_subscriptions(days=1, end_date=datetime.now(timezone.utc).date())
+    users = await get_expiring_subscriptions(days=1, start_date=datetime.now(timezone.utc).date())
     logger.info(f"[BAN] Starting baning users... {users}")
     for u in users:
         if u["user_id"] == bot.id:
