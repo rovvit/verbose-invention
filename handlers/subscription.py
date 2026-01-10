@@ -24,12 +24,22 @@ async def check_by_username(callback: types.CallbackQuery, state: FSMContext):
 
     username = callback.from_user.username
     user_id = callback.from_user.id
+    first_name = callback.from_user.first_name
+    last_name = callback.from_user.last_name
+    full_name = ''
+
+    if first_name:
+        full_name = first_name
+    if last_name:
+        full_name = full_name + ' ' + last_name
+
     logger.info(f"[CHECK] user_id={user_id} username={username}")
 
     if username:
         payment = await check_subscription(
             username=username,
             telegram_user_id=user_id,
+            name=full_name
         )
         if payment:
             await unban_user(bot=callback.bot, user_id=user_id)

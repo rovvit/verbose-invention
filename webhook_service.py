@@ -4,9 +4,11 @@ from utils.logger import logger
 from datetime import datetime, date
 
 
-async def find_subscription(email: str=None, username: str=None, telegram_user_id: int=None):
+async def find_subscription(email: str=None, username: str=None, telegram_user_id: int=None, name: str=None):
     api_url = f"http://{STRIPE_WEBHOOK_HOST}/api/subscription/check"
     payload = {"user_id": telegram_user_id}
+    if name:
+        payload["name"] = name
     if email:
         payload["email"] = email
         logger.info(f"[WH SERVICE] Checking by email {email} for user {telegram_user_id}")
