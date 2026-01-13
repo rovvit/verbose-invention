@@ -4,6 +4,7 @@ from aiogram.utils.markdown import hbold, hcode, hitalic
 from datetime import datetime
 from config import ADMIN_CHAT_ID, SCHEDULER_HOUR, SCHEDULER_MINUTE, BAN_HOUR, BAN_MINUTE
 
+
 async def log_start(bot: Bot):
     """Уведомление о запуске бота или планировщика"""
     message = f"""
@@ -16,9 +17,6 @@ async def log_start(bot: Bot):
         await bot.send_message(ADMIN_CHAT_ID, message, parse_mode="Markdown")
     except Exception as e:
         logging.error(f"Ошибка логирования log_start: {e}")
-
-
-from aiogram import Bot, types
 
 
 async def log_command_start(bot: Bot, message: types.Message):
@@ -119,6 +117,7 @@ async def log_notification(bot: Bot, user_data: dict, days_left: int):
         )
     except Exception as e:
         logging.error(f"Ошибка логирования log_notification: {e}")
+
 
 async def log_ban(bot: Bot, member: types.ChatMember, success: bool):
     """Отчет об удалении пользователя из канала"""
