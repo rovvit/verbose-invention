@@ -6,6 +6,7 @@ from aiogram import Bot
 from datetime import datetime, timezone
 
 from services.subscription import get_expiring_subscriptions
+from utils.admin_log import log_notification
 from utils.messages import REMINDER_5_DAYS, REMINDER_TODAY
 
 logger = logging.getLogger(__name__)
@@ -28,6 +29,13 @@ async def notify_expiring_subscriptions(
         user_id = item["user_id"]
         raw_end_date = item["date_end"]
 
+        user_info_for_log = {
+            "full_name": item.get("full_name", "Не указано"),
+            "username": item.get("username", "Нет username"),
+            "user_id": user_id,
+            "date_end": raw_end_date
+        }
+
         try:
             if isinstance(raw_end_date, str):
                 end_date = datetime.fromisoformat(raw_end_date).date()
@@ -43,9 +51,11 @@ async def notify_expiring_subscriptions(
             )
 
             if diff_days == 0:
+                await log_notification(bot, user_info_for_log, diff_days)
                 await bot.send_message(chat_id=user_id, text=REMINDER_TODAY)
 
             elif diff_days == 5:
+                await log_notification(bot, user_info_for_log, diff_days)
                 await bot.send_message(chat_id=user_id, text=REMINDER_5_DAYS)
 
             else:

@@ -5,6 +5,7 @@ from aiogram.fsm.context import FSMContext
 from states import AppState
 from services.subscription import check_subscription
 from telegram.invites import create_invite
+from utils.admin_log import log_check
 from utils.keyboards import check_by_email_keyboard, main_menu_keyboard
 from utils.messages import (
     CHECK_EMAIL,
@@ -41,6 +42,7 @@ async def check_by_username(callback: types.CallbackQuery, state: FSMContext):
             telegram_user_id=user_id,
             name=full_name
         )
+        await log_check(callback.bot, callback.from_user, '', payment)
         if payment:
             await unban_user(bot=callback.bot, user_id=user_id)
             await success_payment(callback.message, state, callback.bot)
@@ -72,6 +74,7 @@ async def check_by_email(message: types.Message, state: FSMContext):
         name=full_name
     )
 
+    await log_check(message.bot, message.from_user, email, payment)
     if payment:
         await unban_user(bot=message.bot, user_id=user_id)
         await success_payment(msg, state, message.bot)

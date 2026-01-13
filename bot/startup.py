@@ -4,6 +4,7 @@ from datetime import timezone
 from aiogram import Bot
 
 from services.ban import ban_expired_subscriptions
+from utils.admin_log import log_start
 from utils.logger import logger
 from services.notification import notify_expiring_subscriptions
 from config import SCHEDULER_HOUR, SCHEDULER_MINUTE, BAN_HOUR, BAN_MINUTE
@@ -40,6 +41,7 @@ async def on_startup(bot: Bot):
     scheduler.start()
     logger.info(f"[STARTUP] Scheduler started, added notification job at {SCHEDULER_HOUR}:{SCHEDULER_MINUTE} UTC")
     logger.info(f"[STARTUP] Scheduler started, added ban job at {BAN_HOUR}:{BAN_MINUTE} UTC")
+    await log_start(bot)
 
 async def on_shutdown(bot: Bot):
     global scheduler

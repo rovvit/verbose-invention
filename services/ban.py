@@ -1,4 +1,6 @@
 from aiogram import Bot
+
+from utils.admin_log import log_ban
 from utils.logger import logger
 from services.subscription import mark_banned, get_expiring_subscriptions
 from config import TARGET_CHAT_ID
@@ -22,6 +24,8 @@ async def ban_user(bot: Bot, user_id: int):
     if user_id == bot.id:
         logger.warning("[BAN] Skipping ban for bot itself")
         return
+
+    member = await bot.get_chat_member(TARGET_CHAT_ID, user_id)
     for attempt in range(3):
         try:
             chat = await bot.get_chat(TARGET_CHAT_ID)
@@ -32,16 +36,17 @@ async def ban_user(bot: Bot, user_id: int):
             #     f"TARGET_CHAT_ID={TARGET_CHAT_ID}"
             # )
 
-            member = await bot.get_chat_member(TARGET_CHAT_ID, user_id)
             logger.info(f"[BAN] member status before ban: {member.status}")
 
             await bot.ban_chat_member(TARGET_CHAT_ID, user_id)
             await mark_banned(user_id)
+            await log_ban(bot, member, True)
 
             logger.info(f"[BAN] User {user_id} banned")
             return
         except Exception:
             logger.exception(f"[BAN] Failed to ban {user_id}, attempt {attempt+1}")
+            await log_ban(bot, member, False)
             await asyncio.sleep(100)
 
 async def unban_user(bot: Bot, user_id: int) -> None:

@@ -2,6 +2,7 @@ from aiogram import Router, types, F
 from aiogram.filters import Command, StateFilter
 from aiogram.fsm.context import FSMContext
 
+from utils.admin_log import log_command_start
 from utils.keyboards import main_menu_keyboard
 from utils.messages import START_MESSAGE
 from utils.logger import logger
@@ -24,6 +25,7 @@ async def show_menu(message: types.Message, state: FSMContext):
 @router.message(Command("start"), StateFilter(None))
 async def cmd_start(message: types.Message, state: FSMContext):
     logger.info(f"[START] New message from {message.from_user.id}")
+    await log_command_start(message.bot, message)
     await show_menu(message, state)
 
 @router.message(Command("get_chat_id"), StateFilter(None))
