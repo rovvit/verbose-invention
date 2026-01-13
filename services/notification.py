@@ -45,7 +45,7 @@ async def notify_expiring_subscriptions(
             if diff_days == 0:
                 await bot.send_message(chat_id=user_id, text=REMINDER_TODAY)
 
-            elif diff_days == 4:
+            elif diff_days == 5:
                 await bot.send_message(chat_id=user_id, text=REMINDER_5_DAYS)
 
             else:
